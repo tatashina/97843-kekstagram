@@ -1,5 +1,9 @@
 'use strict';
 
+var picturesContainer = document.querySelector('.pictures');
+var galleryOverlay = document.querySelector('.gallery-overlay');
+var galleryOverlayClose = document.querySelector('.gallery-overlay-close');
+
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
@@ -40,7 +44,6 @@ var renderPhoto = function (photoNode) {
 };
 
 var fillPhotos = function (photoData) {
-  var picturesContainer = document.querySelector('.pictures');
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < photoData.length; i++) {
     var newPhotoElement = renderPhoto(photoData[i]);
@@ -49,18 +52,55 @@ var fillPhotos = function (photoData) {
   picturesContainer.appendChild(fragment);
 };
 
-var displayGalleryOverlay = function (dataArray) {
-  var galleryOverlay = document.querySelector('.gallery-overlay');
-  galleryOverlay.querySelector('.gallery-overlay-image').src = dataArray[0].url;
-  galleryOverlay.querySelector('.likes-count').textContent = dataArray[0].likes;
-  galleryOverlay.querySelector('.comments-count').textContent = dataArray[0].comments.length;
+var displayGalleryOverlay = function (event) {
+  event.preventDefault();
+  var currentElement = event.target.closest('.picture');
+  if (!currentElement) {
+    return;
+  }
+  galleryOverlay.querySelector('.gallery-overlay-image').src = currentElement.querySelector('img').src;
+  galleryOverlay.querySelector('.likes-count').textContent = currentElement.querySelector('.picture-likes').textContent;
+  galleryOverlay.querySelector('.comments-count').textContent = currentElement.querySelector('.picture-comments').textContent;
   galleryOverlay.classList.remove('hidden');
+  handlerClosePicture();
+};
+
+var handlerOpenPicture = function () {
+  picturesContainer.addEventListener('click', displayGalleryOverlay);
+};
+
+var handlerClosePicture = function () {
+  galleryOverlayClose.addEventListener('click', removeOverlayClass);
+  galleryOverlayClose.addEventListener('keydown', checkKeyEnter);
+  document.addEventListener('keydown', checkKeyEsc);
+};
+
+var checkKeyEsc = function (event) {
+  if (event.keyCode === 27) {
+    removeOverlayClass();
+  }
+};
+
+var checkKeyEnter = function (event) {
+  if (event.keyCode === 13) {
+    removeOverlayClass();
+  }
+};
+
+var removeOverlayClass = function () {
+  galleryOverlay.classList.add('hidden');
+  removeHandlerClosePicture();
+};
+
+var removeHandlerClosePicture = function () {
+  removeEventListener('click', handlerOpenPicture);
+  removeEventListener('keydown', handlerOpenPicture);
 };
 
 var renderGallery = function () {
   var photoGallery = createPhotos();
   fillPhotos(photoGallery);
-  displayGalleryOverlay(photoGallery);
+  handlerOpenPicture();
 };
 
 renderGallery();
