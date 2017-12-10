@@ -4,6 +4,10 @@ var picturesContainer = document.querySelector('.pictures');
 var galleryOverlay = document.querySelector('.gallery-overlay');
 var galleryOverlayClose = document.querySelector('.gallery-overlay-close');
 
+var ESC_CODE_KEY = 27;
+var ENTER_CODE_KEY = 13;
+var PHOTO_AMOUNT = 25;
+
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
@@ -19,7 +23,7 @@ var createPhotos = function () {
     'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
   ];
 
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < PHOTO_AMOUNT; i++) {
     var commentsLength = getRandom(1, 2);
     var commentsAr = [];
     for (var j = 0; j < commentsLength; j++) {
@@ -76,13 +80,13 @@ var handlerClosePicture = function () {
 };
 
 var checkKeyEsc = function (event) {
-  if (event.keyCode === 27) {
+  if (event.keyCode === ESC_CODE_KEY) {
     removeOverlayClass();
   }
 };
 
 var checkKeyEnter = function (event) {
-  if (event.keyCode === 13) {
+  if (event.keyCode === ENTER_CODE_KEY) {
     removeOverlayClass();
   }
 };
